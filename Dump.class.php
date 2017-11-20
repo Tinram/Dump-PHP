@@ -1,21 +1,24 @@
 <?php
 
-class Dump {
+final class Dump {
 
 	/**
-	* Display global names and backtrace.
-	* Reflection used so new methods can be seamlessly added.
-	*
-	* Usage: new Dump( [ 'all' | string method_name | array (method_names) ] [, boolean output_type] );
-	* e.g.
-	*       new Dump();
-	*       new Dump('displayVars', TRUE);
-	*       new Dump( (array('displayMemory', 'backtrace')) );
-	*
-	* @author          Martin Latter
-	* @copyright       Martin Latter June 2013
-	* @version         1.01
-	* @license         GNU GPL v3.0
+		* Display global names and backtrace.
+		*
+		* Reflection used so new methods can be seamlessly added.
+		*
+		* Usage: new Dump( [ 'all' | string method_name | array (method_names) ] [, boolean output_type] );
+		*
+		* Examples:
+		*           new Dump();
+		*           new Dump('displayFunctions', TRUE);
+		*           new Dump( array('displayMemory', 'backtrace') );
+		*
+		* @author        Martin Latter
+		* @copyright     Martin Latter June 2013
+		* @version       1.02
+		* @license       GNU GPL version 3.0 (GPL v3); http://www.gnu.org/licenses/gpl.html
+		* @link          https://github.com/Tinram/Dump-PHP.git
 	*/
 
 
@@ -23,10 +26,10 @@ class Dump {
 
 
 	/**
-	* constructor, initiate method reflection
-	*
-	* @param    mixed $mMethodName [ string 'all' | string method_name | array method_names ]
-	* @param    boolean $bPrintR,  toggle output format between var_dump() and print_r()
+		* Constructor, initiate method reflection.
+		*
+		* @param   mixed $mMethodName [ string 'all' | string method_name | array method_names ]
+		* @param   boolean $bPrintR,  toggle output format between var_dump() and print_r()
 	*/
 
 	public function __construct($mMethodName = 'all', $bPrintR = FALSE) {
@@ -72,7 +75,7 @@ class Dump {
 
 
 	/**
-	* print memory usage
+		* Print memory usage.
 	*/
 
 	private function displayMemory() {
@@ -84,41 +87,35 @@ class Dump {
 
 		echo $sOs;
 
-	} # end displayMemoryUsage()
+	} # end displayMemory()
 
 
 	/**
-	* print variables
-	*
-	* @param     boolean $bPrintR,  toggle output format
+		* Print constants.
+		*
+		* @param   boolean $bPrintR,  toggle output format
 	*/
 
-	private function displayVars($bPrintR) {
+	private function displayConstants($bPrintR) {
 
-		$aVars = get_defined_vars();
+		echo 'CONSTANTS' . self::BR;
 
-		if (!empty($aVars)) {
+		$aConsts = get_defined_constants();
 
-			echo 'VARIABLES' . self::BR;
-
-			if (!$bPrintR) {
-				var_dump($aVars);
-			}
-			else {
-				print_r($aVars);
-			}
+		if ( ! $bPrintR) {
+			var_dump($aConsts);
 		}
 		else {
-			echo 'No variables in global scope.';
+			print_r($aConsts);
 		}
 
-	} # end displayVars()
+	} # end displayConstants()
 
 
 	/**
-	* print functions
-	*
-	* @param     boolean $bPrintR,  toggle output format
+		* Print functions.
+		*
+		* @param   boolean $bPrintR,  toggle output format
 	*/
 
 	private function displayFunctions($bPrintR) {
@@ -127,7 +124,7 @@ class Dump {
 
 		$aFNs = get_defined_functions();
 
-		if (!$bPrintR) {
+		if ( ! $bPrintR) {
 			var_dump($aFNs['user']);
 		}
 		else {
@@ -138,16 +135,16 @@ class Dump {
 
 
 	/**
-	* print classes
-	*
-	* @param     boolean $bPrintR, toggle output format
+		* Print classes.
+		*
+		* @param   boolean $bPrintR, toggle output format
 	*/
 
 	private function displayClasses($bPrintR) {
 
 		echo 'CLASSES' . self::BR;
 
-		if (!$bPrintR) {
+		if ( ! $bPrintR) {
 			var_dump(get_declared_classes());
 		}
 		else {
@@ -158,9 +155,64 @@ class Dump {
 
 
 	/**
-	* print backtrace
-	*
-	* @param     boolean $bPrintR, toggle output format
+		* Print variables.
+		*
+		* @param   boolean $bPrintR, toggle output format
+	*/
+
+	private function displayVars($bPrintR) {
+
+		echo 'VARIABLES' . self::BR;
+
+		if ( ! $bPrintR) {
+			var_dump($GLOBALS);
+		}
+		else {
+			print_r($GLOBALS);
+		}
+
+	} # end displayVars()
+
+
+	/**
+		* Print includes / requires.
+		*
+		* @param   boolean $bPrintR, toggle output format
+	*/
+
+	private function displayIncludes($bPrintR) {
+
+		echo 'INCLUDES' . self::BR;
+
+		$aIncludes = get_included_files();
+
+		foreach ($aIncludes as $k => $sInclude) {
+
+			if (($sInclude === __FILE__) || (basename($sInclude) === $_SERVER['SCRIPT_NAME'])) {
+				unset($aIncludes[$k]);
+			}
+		}
+
+		if ( ! empty($aIncludes)) {
+
+			if ( ! $bPrintR) {
+				var_dump($aIncludes);
+			}
+			else {
+				print_r($aIncludes);
+			}
+		}
+		else {
+			echo 'No includes found.';
+		}
+
+	} # end displayIncludes()
+
+
+	/**
+		* Print backtrace.
+		*
+		* @param   boolean $bPrintR, toggle output format
 	*/
 
 	private function backtrace($bPrintR) {
@@ -171,7 +223,7 @@ class Dump {
 
 		echo self::BR;
 
-		if (!$bPrintR) {
+		if ( ! $bPrintR) {
 			var_dump(debug_backtrace());
 		}
 		else {
@@ -182,9 +234,9 @@ class Dump {
 
 
 	/**
-	* add more methods here
+		* Add more methods here.
 	*/
 
-} # end Dump {}
+}
 
 ?>
