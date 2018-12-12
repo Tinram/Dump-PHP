@@ -8,15 +8,20 @@
 
 ## Usage
 
-        new Dump( [ 'all' | string method_name | array (method_names) ] [, boolean output_type] );
+```php
+    new Dump( [ 'all' | string method_name | array (method_names) ] [, boolean output_type] );
+```
 
 
 ### Examples
 
-        require('Dump.class.php');
 
-        new Dump();
+```php
+    require('Dump.class.php');
 
-        new Dump('displayFunctions', TRUE);
+    new Dump();
 
-        new Dump( ['displayMemory', 'backtrace'] );
+    new Dump('displayFunctions', TRUE);
+
+    new Dump( ['displayMemory', 'backtrace'] );
+```
